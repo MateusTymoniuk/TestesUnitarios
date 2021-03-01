@@ -1,5 +1,7 @@
 package br.ce.wcaquino.servicos;
 
+import static br.ce.wcaquino.builders.FilmeBuilder.umFilme;
+import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -35,13 +37,13 @@ public class CalculoValorLocacaoTest {
 	
 	private LocacaoService locacaoService;
 	
-	static Filme filme1 = new Filme("Filme 1", 1, 4.0);
-	static Filme filme2 = new Filme("Filme 2", 1, 4.0);
-	static Filme filme3 = new Filme("Filme 3", 1, 4.0);
-	static Filme filme4 = new Filme("Filme 4", 1, 4.0);
-	static Filme filme5 = new Filme("Filme 5", 1, 4.0);
-	static Filme filme6 = new Filme("Filme 6", 1, 4.0);
-	static Filme filme7 = new Filme("Filme 7", 1, 4.0);
+	static Filme filme1 = umFilme().construir();
+	static Filme filme2 = umFilme().construir();
+	static Filme filme3 = umFilme().construir();
+	static Filme filme4 = umFilme().construir();
+	static Filme filme5 = umFilme().construir();
+	static Filme filme6 = umFilme().construir();
+	static Filme filme7 = umFilme().construir();
 	
 	@Before
 	public void setUp() {
@@ -86,7 +88,7 @@ public class CalculoValorLocacaoTest {
 
 	@Test
 	public void deveCalcularValorLocacaoComDevidosDescontos() throws FilmeSemEstoqueException, LocadoraException {
-		Usuario usuario = new Usuario("Mateus");
+		Usuario usuario = umUsuario().construir();
 		
 		Locacao resultado = locacaoService.alugarFilme(usuario, filmes);
 
