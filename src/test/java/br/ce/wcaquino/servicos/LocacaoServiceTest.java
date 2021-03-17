@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -25,7 +26,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.mockito.Mockito;
 
+import br.ce.wcaquino.daos.LocacaoDAO;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
@@ -36,12 +39,22 @@ import br.ce.wcaquino.utils.DataUtils;
 public class LocacaoServiceTest {
 
 	private LocacaoService locacaoService;
+	
+	LocacaoDAO dao;
+	
+	SPCService spc;
 
 	ErrorCollector error = new ErrorCollector();
 
 	@Before
 	public void setUp() {
 		locacaoService = new LocacaoService();
+		
+		dao = Mockito.mock(LocacaoDAO.class);
+		spc = Mockito.mock(SPCService.class);
+
+		locacaoService.setLocacaoDAO(dao);
+		locacaoService.setSPCService(spc);
 	}
 
 	@Rule
@@ -117,5 +130,18 @@ public class LocacaoServiceTest {
 		assertTrue(ehSegundaFeira);
 		assertThat(resultado.getDataRetorno(), caiEm(Calendar.MONDAY));
 		assertThat(resultado.getDataRetorno(), caiNumaSegunda());
+	}
+	
+	@Test
+	public void naoDeveAlugarFilmeParaNegativadoSPC() throws FilmeSemEstoqueException, LocadoraException {
+		Usuario usuario = umUsuario().construir();
+		List<Filme> filmes = Arrays.asList(umFilme().construir(), umFilme().construir());
+		
+		when(spc.isUsuarioNegativado(usuario)).thenReturn(true);
+
+		exception.expect(LocadoraException.class);
+		exception.expectMessage("Usuario negativado");
+		
+		locacaoService.alugarFilme(usuario, filmes);
 	}
 }
