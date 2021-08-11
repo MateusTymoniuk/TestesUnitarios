@@ -24,4 +24,8 @@ public class CustomDateMatchers {
 		Date hoje = new Date();
 		return new DateMatcher(DataUtils.adicionarDias(hoje, 1));
 	}
+
+	public static DataComDiferencaDiasMatcher ehComComDiferencaDias(int quantidadeDias) {
+		return new DataComDiferencaDiasMatcher(quantidadeDias);
+	}
 }
